@@ -1,5 +1,6 @@
 
 # {{{ health checkers
+
 ### profiles - users - auth
 GET http://localhost:8001/health
 
@@ -29,17 +30,46 @@ GET http://localhost:8032/health
 
 ### local
 GET http://localhost:8000/health
+
 # }}}
 
 ### auth bypass
 GET http://localhost:8003/auth/bypass/1
 Accept: application/json
 
-# {{{ example
+# {{{ slides
 
-GET http://localhost:8000/api/v1/example
+GET http://localhost:8000/api/v1/slide
 Accept: application/json
-Authorization: Bearer <token>
-Content-type: application/json
+Authorization: Bearer 
+
+GET http://localhost:8000/api/v1/slide/1
+Accept: application/json
+Authorization: Bearer 
+
+POST http://localhost:8000/api/v1/slide
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "slide_type": "content",
+  "title": "Título tropecientos"
+}
+
+GET http://localhost:8000/api/v1/slide/6
+Accept: application/json
+Authorization: Bearer 
+
+PUT http://localhost:8000/api/v1/slide/6
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "slide_type": "content",
+  "content": "Content del título tropecientos",
+  "title": "Título tropecientos"
+}
 
 # }}}

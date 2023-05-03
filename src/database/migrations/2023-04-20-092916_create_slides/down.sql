@@ -1,0 +1,2 @@
+DROP TABLE slides CASCADE;
+-- DROP PUBLICATION slides_pub;
