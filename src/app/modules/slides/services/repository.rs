@@ -27,6 +27,21 @@ pub async fn get_by_id(db: &Db, id: i32) -> Result<Slide, diesel::result::Error>
     Ok(slide.into())
 }
 
+pub async fn get_slides_by_ids(db: &Db, ids: Vec<i32>) -> Result<Vec<Slide>, diesel::result::Error> {
+    let slides = db
+        .run(move |conn| {
+            slides::table
+                .filter(slides::id.eq_any(ids))
+                .load::<(i32, String, String, Option<String>, Option<i32>)>(conn)
+        })
+        .await?
+        .into_iter()
+        .map(|s| s.into())
+        .collect();
+
+    Ok(slides)
+}
+
 pub async fn create(db: &Db, new_slide: NewSlide) -> Result<Slide, diesel::result::Error> {
     let result = db
         .run(move |conn| {
