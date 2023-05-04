@@ -1,6 +1,5 @@
 
 # {{{ health checkers
-
 ### profiles - users - auth
 GET http://localhost:8001/health
 
@@ -30,7 +29,6 @@ GET http://localhost:8032/health
 
 ### local
 GET http://localhost:8000/health
-
 # }}}
 
 ### auth bypass

@@ -20,6 +20,9 @@ Acceder al repositorio en github y pulsar **Use this template**, **Create a new 
    ```
 1. 
    ``` bash
+    git pull --set-upstream base main --allow-unrelated-histories 
+   ```
+   ``` bash
    git pull
    ```
 
