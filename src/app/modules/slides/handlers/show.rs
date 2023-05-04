@@ -6,6 +6,8 @@ use crate::config::database::Db;
 
 use crate::app::providers::interfaces::question::{PubQuestion, QuestionType};
 
+use crate::app::modules::slide_question::services::repository as sq_repository;
+
 use crate::app::modules::slides::model::SlideExpanded;
 use crate::app::modules::slides::services::repository as slides_repository;
 
@@ -14,11 +16,25 @@ pub async fn get_show_admin(db: Db, _admin: UserInClaims, id: i32) -> Result<Jso
 
     match slide {
         Ok(slide) => {
-            // debería llamar a question para pedir la pregunta
-            let pub_question = PubQuestion {
-                id: slide.question_id.unwrap(),
-                question_type: QuestionType::Input,
-                question: String::from("blabla?"),
+            let pub_question = match slide.question_id {
+                Some(id) => { 
+                    let question = sq_repository::get_question_by_id(id).await;
+                    match question {
+                        Ok(question) => {
+                            Some(PubQuestion {
+                                id: question.id,
+                                question_type: question.question_type,
+                                question: question.question,
+                            })
+                        },// Quizá es un error no un none
+                        Err(_) => {
+                            None
+                        }
+                    }
+                },// Quizá es un error no un none
+                None => {
+                    None
+                }
             };
 
             let slide_expanded = SlideExpanded {
@@ -26,7 +42,7 @@ pub async fn get_show_admin(db: Db, _admin: UserInClaims, id: i32) -> Result<Jso
                 slide_type: slide.slide_type,
                 title: slide.title,
                 content: slide.content,
-                question: Some(pub_question),
+                question: pub_question,
             };
 
 
@@ -44,17 +60,34 @@ pub async fn get_multiple_admin(db: &Db, _admin: UserInClaims, ids: Vec<i32>) ->
 
     match slides {
         Ok(slides)  => {
+            let question_ids: Vec<i32> = slides.iter().filter_map(|slide| slide.question_id).collect();
+            let questions = sq_repository::get_questions_by_ids(question_ids).await;
+
+            if let Err(_) = questions {
+                println!("Error: get_multiple_admin; Questions not found");
+                return Err(Status::InternalServerError);
+            }
+            let questions = questions.unwrap();
+
             let mut slides_expanded: Vec<SlideExpanded> = Vec::new();
 
             // debería llamar a question para pedir las preguntas
             for slide in slides {
                 let pub_question = match slide.question_id {
                     Some(id) => { 
-                        Some(PubQuestion {
-                            id,
-                            question_type: QuestionType::Input,
-                            question: String::from("blabla?"),
-                        })
+                        let question = questions.iter().find(|question| question.id == id);
+                        match question {
+                            Some(question) => {
+                                Some(PubQuestion {
+                                    id: question.id,
+                                    question_type: question.question_type.clone(),
+                                    question: question.question.clone(),
+                                })
+                            },
+                            None => {
+                                None
+                            }
+                        }
                     },
                     None => {
                         None
