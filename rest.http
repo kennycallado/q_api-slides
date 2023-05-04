@@ -45,6 +45,13 @@ GET http://localhost:8000/api/v1/slide/1
 Accept: application/json
 Authorization: Bearer 
 
+POST http://localhost:8000/api/v1/slide/multiple
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+[ 1, 2, 8 ]
+
 POST http://localhost:8000/api/v1/slide
 Accept: application/json
 Authorization: Bearer 
