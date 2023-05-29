@@ -1,10 +1,13 @@
+use rocket::State;
 use rocket::http::Status;
 
 use crate::app::providers::interfaces::helpers::claims::{Claims, UserInClaims};
 use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
+use crate::app::providers::interfaces::helpers::fetch::Fetch;
+
 use crate::app::providers::interfaces::question::PubQuestion;
 
-pub async fn get_questions_by_ids(ids: Vec<i32>) -> Result<Vec<PubQuestion>, Status> {
+pub async fn get_questions_by_ids(fetch: &State<Fetch>, ids: Vec<i32>) -> Result<Vec<PubQuestion>, Status> {
     // Prepare robot token
     let robot_token = robot_token_generator().await;
     if let Err(_) = robot_token {
@@ -16,7 +19,7 @@ pub async fn get_questions_by_ids(ids: Vec<i32>) -> Result<Vec<PubQuestion>, Sta
     let question_url = ConfigGetter::get_entity_url("question").unwrap_or("http://localhost:8011/api/v1/question".to_string()) + "/multiple";
 
     // Request question
-    let client = reqwest::Client::new();
+    let client = fetch.client.lock().await;
     let res = client
         .post(&question_url)
         .header("Accept", "application/json")
@@ -42,7 +45,7 @@ pub async fn get_questions_by_ids(ids: Vec<i32>) -> Result<Vec<PubQuestion>, Sta
     }
 }
 
-pub async fn get_question_by_id(id: i32) -> Result<PubQuestion, Status> {
+pub async fn get_question_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubQuestion, Status> {
     // Prepare robot token
     let robot_token = robot_token_generator().await;
     if let Err(_) = robot_token {
@@ -54,7 +57,7 @@ pub async fn get_question_by_id(id: i32) -> Result<PubQuestion, Status> {
     let question_url = ConfigGetter::get_entity_url("question").unwrap_or("http://localhost:8011/api/v1/question".to_string()) + "/" + &id.to_string();
 
     // Request question
-    let client = reqwest::Client::new();
+    let client = fetch.client.lock().await;
     let res = client
         .get(&question_url)
         .header("Authorization", robot_token)
