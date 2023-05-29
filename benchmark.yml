@@ -44,4 +44,56 @@ plan:
       headers:
         Accept: application/json
     tags: [ health ]
+
+  - name: Post Index
+    request:
+      method: POST
+      url: '/api/v1/slide'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "slide_type": "content", "title": "{{ iteration }}: Título tropecientos" }'
+    tags: [ post ]
+
+
+  - name: Get Index
+    request:
+      url: '/api/v1/slide'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ index ]
+
+  - name: Get Show
+    request:
+      # url: '/api/v1/slide/1'
+      url: '/api/v1/slide/{{ iteration }}'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ show ]
+
+  - name: Post get Multiple
+    request:
+      method: POST
+      url: '/api/v1/slide/multiple'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '[ 1 ]'
+    tags: [ multiple ]
+
+  - name: Put Show
+    request:
+      method: PUT
+      # url: '/api/v1/slide/1'
+      url: '/api/v1/slide/{{ iteration }}'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "slide_type": "content", "content": "Content del título {{ iteration }}", "title": "{{ iteration }}Título tropecientos" }'
+    tags: [ put ]
 ---
