@@ -1,8 +1,10 @@
 use std::fmt;
 
 // use chrono::NaiveDateTime;
+use diesel::{
+    deserialize::FromSqlRow, expression::AsExpression, helper_types::AsExprOf, pg::Pg, row::Row, sql_types::Text,
+};
 use serde::{Deserialize, Serialize};
-use diesel::{sql_types::Text, pg::Pg, row::Row, expression::AsExpression, helper_types::AsExprOf, deserialize::FromSqlRow};
 
 use crate::app::providers::interfaces::question::PubQuestion;
 
@@ -25,7 +27,7 @@ impl From<(i32, String, String, Option<String>, Option<i32>)> for Slide {
             id: value.0,
             slide_type: match value.1.as_ref() {
                 "content" => SlideType::Content,
-                "input"   => SlideType::Input,
+                "input" => SlideType::Input,
                 _ => panic!("Unknown question type"),
             },
             title: value.2,
@@ -76,7 +78,10 @@ pub enum SlideType {
 
 impl fmt::Display for SlideType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", match *self {
+        write!(
+            f,
+            "{}",
+            match *self {
                 SlideType::Content => "content",
                 SlideType::Input => "input",
             }
@@ -88,7 +93,7 @@ impl FromSqlRow<Text, Pg> for SlideType {
     fn build_from_row<'a>(row: &impl Row<'a, Pg>) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         match String::build_from_row(row)?.as_ref() {
             "content" => Ok(SlideType::Content),
-            "input"   => Ok(SlideType::Input),
+            "input" => Ok(SlideType::Input),
             v => Err(format!("Unknown value {} for SlideType found", v).into()),
         }
     }

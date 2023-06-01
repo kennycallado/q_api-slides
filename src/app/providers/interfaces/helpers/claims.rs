@@ -2,9 +2,7 @@ use jsonwebtoken::errors::Error;
 use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
 use serde::{Deserialize, Serialize};
 
-use crate::app::providers::constants::{
-    ACCESS_TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION, ROBOT_TOKEN_EXPIRATION,
-};
+use crate::app::providers::constants::{ACCESS_TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION, ROBOT_TOKEN_EXPIRATION};
 
 use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
 

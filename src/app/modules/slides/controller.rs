@@ -1,6 +1,6 @@
-use rocket::State;
 use rocket::http::Status;
 use rocket::serde::json::Json;
+use rocket::State;
 
 use crate::app::providers::guards::claims::AccessClaims;
 use crate::app::providers::interfaces::helpers::fetch::Fetch;
@@ -54,7 +54,12 @@ pub fn get_index_none() -> Status {
 }
 
 #[post("/multiple", data = "<slide_ids>", rank = 1)]
-pub async fn post_multiple(fetch: &State<Fetch>, db: Db, claims: AccessClaims, slide_ids: Json<Vec<i32>>) -> Result<Json<Vec<SlideExpanded>>, Status> {
+pub async fn post_multiple(
+    fetch: &State<Fetch>,
+    db: Db,
+    claims: AccessClaims,
+    slide_ids: Json<Vec<i32>>,
+) -> Result<Json<Vec<SlideExpanded>>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_multiple_admin(fetch, &db, claims.0.user, slide_ids.into_inner()).await,
         "robot" => show::get_multiple_admin(fetch, &db, claims.0.user, slide_ids.into_inner()).await,
@@ -71,7 +76,12 @@ pub fn post_multiple_none(_slide_ids: Json<Vec<i32>>) -> Status {
 }
 
 #[get("/<id>", rank = 101)]
-pub async fn get_show(fetch: &State<Fetch>, db: Db, claims: AccessClaims, id: i32) -> Result<Json<SlideExpanded>, Status> {
+pub async fn get_show(
+    fetch: &State<Fetch>,
+    db: Db,
+    claims: AccessClaims,
+    id: i32,
+) -> Result<Json<SlideExpanded>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(fetch, db, claims.0.user, id).await,
         "robot" => show::get_show_admin(fetch, db, claims.0.user, id).await,
@@ -111,9 +121,7 @@ pub async fn put_update(
     new_slide: Json<NewSlide>,
 ) -> Result<Json<Slide>, Status> {
     match claims.0.user.role.name.as_str() {
-        "admin" => {
-            update::put_update_admin(db, claims.0.user, id, new_slide.into_inner()).await
-        }
+        "admin" => update::put_update_admin(db, claims.0.user, id, new_slide.into_inner()).await,
         _ => {
             println!("Error: put_update; Role not handled");
             Err(Status::BadRequest)

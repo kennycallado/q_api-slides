@@ -1,3 +1,3 @@
-mod slides;
-mod slide_question;
 pub mod routing;
+mod slide_question;
+mod slides;

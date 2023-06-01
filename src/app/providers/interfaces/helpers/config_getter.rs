@@ -46,47 +46,29 @@ impl ConfigGetter {
     }
 
     pub fn get_origin_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .origin_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().origin_url
     }
 
     pub fn get_secret_key() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .secret_key
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().secret_key
     }
 }
 
 impl ConfigGetter {
     fn get_profile_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .profile_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().profile_url
     }
 
     fn get_user_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .user_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().user_url
     }
 
     fn get_auth_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .auth_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().auth_url
     }
 
     fn get_fcm_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .fcm_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().fcm_url
     }
 
     fn get_question_url() -> Option<String> {
@@ -97,24 +79,15 @@ impl ConfigGetter {
     }
 
     fn get_answer_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .answer_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().answer_url
     }
 
     fn get_slide_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .slide_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().slide_url
     }
 
     fn get_form_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .form_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().form_url
     }
 
     fn get_external_url() -> Option<String> {
@@ -132,9 +105,6 @@ impl ConfigGetter {
     }
 
     fn get_paper_url() -> Option<String> {
-        rocket::Config::figment()
-            .extract::<ConfigGetter>()
-            .unwrap()
-            .paper_url
+        rocket::Config::figment().extract::<ConfigGetter>().unwrap().paper_url
     }
 }
