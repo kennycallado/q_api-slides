@@ -7,7 +7,6 @@ use crate::app::providers::interfaces::helpers::fetch::Fetch;
 use crate::config::database::Db;
 
 use crate::app::modules::slides::handlers::{create, index, show, update};
-
 use crate::app::modules::slides::model::{NewSlide, Slide, SlideExpanded};
 
 pub fn routes() -> Vec<rocket::Route> {

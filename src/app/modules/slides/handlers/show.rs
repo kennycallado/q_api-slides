@@ -2,11 +2,11 @@ use rocket::http::Status;
 use rocket::serde::json::Json;
 use rocket::State;
 
-use crate::app::providers::interfaces::helpers::claims::UserInClaims;
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
 use crate::config::database::Db;
 
-use crate::app::providers::interfaces::question::{PubQuestion, QuestionType};
+use crate::app::providers::interfaces::helpers::claims::UserInClaims;
+use crate::app::providers::interfaces::helpers::fetch::Fetch;
+use crate::app::providers::interfaces::question::PubQuestion;
 
 use crate::app::modules::slide_question::services::repository as sq_repository;
 
@@ -76,7 +76,6 @@ pub async fn get_multiple_admin(
 
             let mut slides_expanded: Vec<SlideExpanded> = Vec::new();
 
-            // debería llamar a question para pedir las preguntas
             for slide in slides {
                 let pub_question = match slide.question_id {
                     Some(id) => {

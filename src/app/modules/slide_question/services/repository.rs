@@ -1,7 +1,6 @@
 use rocket::http::Status;
 use rocket::State;
 
-use crate::app::providers::interfaces::helpers::claims::{Claims, UserInClaims};
 use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
 use crate::app::providers::interfaces::helpers::fetch::Fetch;
 
@@ -9,11 +8,10 @@ use crate::app::providers::interfaces::question::PubQuestion;
 
 pub async fn get_questions_by_ids(fetch: &State<Fetch>, ids: Vec<i32>) -> Result<Vec<PubQuestion>, Status> {
     // Prepare robot token
-    let robot_token = robot_token_generator().await;
-    if let Err(_) = robot_token {
-        return Err(Status::InternalServerError);
-    }
-    let robot_token = robot_token.unwrap();
+    let robot_token = match Fetch::robot_token().await {
+        Ok(robot_token) => robot_token,
+        Err(_) => return Err(Status::InternalServerError),
+    };
 
     // Prepare questions url
     let question_url = ConfigGetter::get_entity_url("question")
@@ -49,11 +47,10 @@ pub async fn get_questions_by_ids(fetch: &State<Fetch>, ids: Vec<i32>) -> Result
 
 pub async fn get_question_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubQuestion, Status> {
     // Prepare robot token
-    let robot_token = robot_token_generator().await;
-    if let Err(_) = robot_token {
-        return Err(Status::InternalServerError);
-    }
-    let robot_token = robot_token.unwrap();
+    let robot_token = match Fetch::robot_token().await {
+        Ok(robot_token) => robot_token,
+        Err(_) => return Err(Status::InternalServerError),
+    };
 
     // Prepare questions url
     let question_url = ConfigGetter::get_entity_url("question")
@@ -82,21 +79,5 @@ pub async fn get_question_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubQues
             }
         }
         Err(_) => Err(Status::InternalServerError),
-    }
-}
-
-async fn robot_token_generator() -> Result<String, Status> {
-    let mut claims: Claims = Claims::from(UserInClaims::default());
-
-    let access_token = claims.enconde_for_robot();
-    if let Err(_) = access_token {
-        return Err(Status::InternalServerError);
-    }
-
-    match access_token {
-        Ok(access_token) => Ok(access_token),
-        Err(_) => {
-            return Err(Status::InternalServerError);
-        }
     }
 }

@@ -112,22 +112,3 @@ impl<'a> AsExpression<Text> for &'a SlideType {
         <String as AsExpression<Text>>::as_expression(self.to_string())
     }
 }
-
-// impl From<UpdateSlide> for NewSlide {
-//     fn from(slide: UpdateSlide) -> Self {
-//         NewSlide {
-//             slide_type: slide.slide_type,
-//             title: slide.title,
-//             content: slide.content,
-//         }
-//     }
-// }
-
-// #[derive(Debug, Clone, Deserialize, Serialize)]
-// #[serde(crate = "rocket::serde")]
-// pub struct UpdateSlide {
-//     pub id: i32,
-//     pub slide_type: String,
-//     pub title: String,
-//     pub content: Option<String>,
-// }
