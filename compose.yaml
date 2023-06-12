@@ -32,7 +32,6 @@ services:
 #       - ROCKET_ADDRESS="0.0.0.0"
 #       - ROCKET_PORT=8000
 #       - ROCKET_SECRET_KEY=""
-#       - ROCKET_MIGRATIONS_RUN=true
 #       - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
 #     depends_on:
 #       - database
@@ -68,8 +67,9 @@ services:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
-      - ROCKET_MIGRATIONS_RUN=true
       - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
+      - ROCKET_PROJECT_URL="http://projects_api:8000/api/v1/user"
+      - ROCKET_FCM_URL="http://fcm_api:8000/api/v1/fcm/"
     depends_on:
       - database
   # }}}
@@ -88,7 +88,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile"
-      - ROCKET_USER_URL="http://users_api:8000/api/v1/user"
+      - ROCKET_USER_URL="http://users_api:8000/api/v1/user/"
     depends_on:
       - users_api
   # }}}
@@ -106,13 +106,12 @@ services:
       - ROCKET_ADDRESS="0.0.0.0"
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
-      - ROCKET_MIGRATIONS_RUN=true
       - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
     depends_on:
       - users_api
   # }}}
 
-  # # {{{ ansers
+  # # {{{ answers
   # answers_api:
   #   image: kennycallado/q-api-answers:latest
   #   ports:
@@ -123,14 +122,13 @@ services:
   #     - ROCKET_ADDRESS="0.0.0.0"
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
   #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
   #   depends_on:
   #     - questions_api
   # # }}}
 # }}}
 
-# {{{ slides - forms - externals
+# {{{ slides
   # # {{{ slides
   # slides_api:
   #   image: kennycallado/q-api-slides:latest
@@ -142,50 +140,10 @@ services:
   #     - ROCKET_ADDRESS="0.0.0.0"
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
   #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
   #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
   #   depends_on:
   #     - questions_api
-  #     - answers_api
-  # # }}}
-  
-  # # {{{ forms
-  # forms_api:
-  #   image: kennycallado/q-api-forms:latest
-  #   ports:
-  #     - "8022:8000"
-  #   expose:
-  #     - "8022:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
-  #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
-  #   depends_on:
-  #     - questions_api
-  #     - slides_api
-  # # }}}
-  # 
-  # # {{{ externals
-  # externals_api:
-  #   image: kennycallado/q-api-externals:latest
-  #   ports:
-  #     - "8023:8000"
-  #   expose:
-  #     - "8023:8000"
-  #   environment:
-  #     - ROCKET_ADDRESS="0.0.0.0"
-  #     - ROCKET_PORT=8000
-  #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
-  #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
-  #   depends_on:
-  #     - questions_api
-  #     - forms_api
   # # }}}
 # }}}
 
@@ -201,15 +159,12 @@ services:
   #     - ROCKET_ADDRESS="0.0.0.0"
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
   #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
-  #     - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide"
-  #     - ROCKET_FORM_URL="http://forms_api:8000/api/v1/form"
-  #     - ROCKET_EXTERNAL_URL="http://externals_api:8000/api/v1/external"
+  #     - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide/"
   #   depends_on:
-  #     # - slides_api
-  #     - answers_api
+  #     - slides_api
   # # }}}
+  
   # # {{{ papers
   # papers_api:
   #   image: kennycallado/q-api-papers:latest
@@ -221,9 +176,54 @@ services:
   #     - ROCKET_ADDRESS="0.0.0.0"
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
-  #     - ROCKET_MIGRATIONS_RUN=true
   #     - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
   #   depends_on:
   #     - resources_api
   # # }}}
 # }}}
+
+# # {{{ checker - logics
+#   # {{{ checker
+#   checker_api:
+#     image: kennycallado/q-api-checker:latest
+#     ports:
+#       - "3000:3000"
+#     expose:
+#       - "3000:3000"
+#   # }}}
+#   
+#   # {{{ logics
+#   logics_api:
+#     image: kennycallado/q-api-logics:latest
+#     ports:
+#       - "8041:8000"
+#     expose:
+#       - "8041:8000"
+#     environment:
+#       - ROCKET_ADDRESS="0.0.0.0"
+#       - ROCKET_PORT=8000
+#       - ROCKET_SECRET_KEY=""
+#       - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
+#       - ROCKET_CHECKER_URL="http://checker_api:3000/"
+#     depends_on:
+#       - checker_api
+#       - projects_api
+#       - users_api
+#   # }}}
+# # }}}
+
+# # {{{ projects
+#   projects_api:
+#     image: kennycallado/q-api-projects:latest
+#     ports:
+#       - "8051:8000"
+#     expose:
+#       - "8051:8000"
+#     environment:
+#       - ROCKET_ADDRESS="0.0.0.0"
+#       - ROCKET_PORT=8000
+#       - ROCKET_SECRET_KEY=""
+#       - ROCKET_DATABASES={questions={url="postgres://slides:slides@database/slides"}}
+#     depends_on:
+#       - database
+# # }}}
