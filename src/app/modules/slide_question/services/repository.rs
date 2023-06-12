@@ -1,24 +1,20 @@
 use rocket::http::Status;
 use rocket::State;
 
-use crate::app::providers::interfaces::helpers::config_getter::ConfigGetter;
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
-
-use crate::app::providers::interfaces::question::PubQuestion;
+use crate::app::providers::config_getter::ConfigGetter;
+use crate::app::providers::models::question::PubQuestion;
+use crate::app::providers::services::fetch::Fetch;
 
 pub async fn get_questions_by_ids(fetch: &State<Fetch>, ids: Vec<i32>) -> Result<Vec<PubQuestion>, Status> {
-    // Prepare robot token
     let robot_token = match Fetch::robot_token().await {
         Ok(robot_token) => robot_token,
         Err(_) => return Err(Status::InternalServerError),
     };
 
-    // Prepare questions url
     let question_url = ConfigGetter::get_entity_url("question")
-        .unwrap_or("http://localhost:8011/api/v1/question".to_string())
+        .unwrap_or("http://localhost:8011/api/v1/question/".to_string())
         + "/multiple";
 
-    // Request question
     let client = fetch.client.lock().await;
     let res = client
         .post(&question_url)
@@ -54,8 +50,7 @@ pub async fn get_question_by_id(fetch: &State<Fetch>, id: i32) -> Result<PubQues
 
     // Prepare questions url
     let question_url = ConfigGetter::get_entity_url("question")
-        .unwrap_or("http://localhost:8011/api/v1/question".to_string())
-        + "/"
+        .unwrap_or("http://localhost:8011/api/v1/question/".to_string())
         + &id.to_string();
 
     // Request question

@@ -6,7 +6,7 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::app::providers::interfaces::question::PubQuestion;
+use crate::app::providers::models::question::PubQuestion;
 
 use crate::database::schema::slides;
 
@@ -37,7 +37,7 @@ impl From<(i32, String, String, Option<String>, Option<i32>)> for Slide {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct SlideExpanded {
     pub id: i32,

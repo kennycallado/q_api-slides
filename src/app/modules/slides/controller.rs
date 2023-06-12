@@ -2,9 +2,10 @@ use rocket::http::Status;
 use rocket::serde::json::Json;
 use rocket::State;
 
+use crate::database::connection::Db;
+
 use crate::app::providers::guards::claims::AccessClaims;
-use crate::app::providers::interfaces::helpers::fetch::Fetch;
-use crate::config::database::Db;
+use crate::app::providers::services::fetch::Fetch;
 
 use crate::app::modules::slides::handlers::{create, index, show, update};
 use crate::app::modules::slides::model::{NewSlide, Slide, SlideExpanded};
