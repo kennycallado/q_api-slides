@@ -10,7 +10,7 @@ pub struct PubQuestion {
     pub question: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct PubNewQuestion {
     pub question_type: QuestionType,

@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::app::providers::constants::{ACCESS_TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION, ROBOT_TOKEN_EXPIRATION};
 
 use crate::app::providers::config_getter::ConfigGetter;
+use crate::app::providers::models::user::PubUserExpanded;
 
 #[derive(Debug)]
 pub enum ClaimsError {
@@ -54,6 +55,20 @@ impl From<UserInClaims> for Claims {
             user,
             iat,
             exp,
+        }
+    }
+}
+
+impl From<PubUserExpanded> for UserInClaims {
+    fn from(user: PubUserExpanded) -> Self {
+        UserInClaims {
+            id: user.id,
+            depends_on: user.depends_on.id,
+            role: RoleInClaims {
+                id: user.role.id,
+                name: user.role.name,
+            },
+            user_token: user.user_token,
         }
     }
 }

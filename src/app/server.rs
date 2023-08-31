@@ -2,9 +2,9 @@
 use crate::app::providers::services::cron::CronManager;
 
 #[cfg(feature = "db")]
-use rocket::fairing::AdHoc;
-#[cfg(feature = "db")]
 use crate::database::connection;
+#[cfg(feature = "db")]
+use rocket::fairing::AdHoc;
 
 #[cfg(feature = "fetch")]
 use crate::app::providers::services::fetch::Fetch;
@@ -23,7 +23,10 @@ pub async fn rocket() -> _ {
     {
         rocket_build = rocket_build
             .attach(connection::Db::fairing())
-            .attach(AdHoc::on_ignite("Diesel Migrations", connection::run_migrations));
+            .attach(AdHoc::on_ignite(
+                "Diesel Migrations",
+                connection::run_migrations,
+            ));
     }
 
     #[cfg(feature = "fetch")]
@@ -33,7 +36,21 @@ pub async fn rocket() -> _ {
 
     #[cfg(feature = "cron")]
     {
-        rocket_build = rocket_build.manage(CronManager::new().await);
+
+        let mut db_url = None;
+        if cfg!(feature = "db") {
+            db_url = Some(rocket::Config::figment().extract_inner::<String>("databases.questions.url").unwrap());
+        }
+
+        rocket_build = rocket_build.manage(CronManager::new(db_url).await);
+
+        if cfg!(feature = "db") {
+            let cron_manager = rocket_build
+                .state::<CronManager>()
+                .expect("ERROR: rocket(); cron manager");
+
+            cron_manager.init_from_db().await;
+        }
     }
 
     rocket_build
