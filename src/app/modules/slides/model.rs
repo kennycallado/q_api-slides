@@ -7,7 +7,7 @@ use diesel::{
 use serde::{Deserialize, Serialize};
 
 use crate::app::providers::models::question::PubQuestion;
-
+use crate::app::modules::media::model::{Media, NewMedia};
 use crate::database::schema::slides;
 
 #[derive(Debug, Clone, Deserialize, Serialize, Queryable, Identifiable)]
@@ -17,22 +17,27 @@ pub struct Slide {
     pub id: i32,
     pub slide_type: SlideType,
     pub title: String,
+    pub media_id: Option<i32>,
     pub content: Option<String>,
     pub question_id: Option<i32>,
 }
 
-impl From<(i32, String, String, Option<String>, Option<i32>)> for Slide {
-    fn from(value: (i32, String, String, Option<String>, Option<i32>)) -> Self {
+impl From<(i32, String, String, Option<i32>, Option<String>, Option<i32>)> for Slide {
+    fn from(value: (i32, String, String, Option<i32>, Option<String>, Option<i32>)) -> Self {
         Slide {
             id: value.0,
             slide_type: match value.1.as_ref() {
                 "content" => SlideType::Content,
                 "input" => SlideType::Input,
-                _ => panic!("Unknown question type"),
+                _ => {
+                    // should print an error and return internal error 
+                    panic!("Unknown question type")
+                },
             },
             title: value.2,
-            content: value.3,
-            question_id: value.4,
+            media_id: value.3,
+            content: value.4,
+            question_id: value.5,
         }
     }
 }
@@ -43,6 +48,7 @@ pub struct SlideExpanded {
     pub id: i32,
     pub slide_type: SlideType,
     pub title: String,
+    pub media: Option<Media>,
     pub content: Option<String>,
     pub question: Option<PubQuestion>,
 }
@@ -54,6 +60,17 @@ pub struct SlideExpanded {
 pub struct NewSlide {
     pub slide_type: SlideType,
     pub title: String,
+    pub media_id: Option<i32>,
+    pub content: Option<String>,
+    pub question_id: Option<i32>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct PostSlide {
+    pub slide_type: SlideType,
+    pub title: String,
+    pub media: Option<NewMedia>,
     pub content: Option<String>,
     pub question_id: Option<i32>,
 }
@@ -63,6 +80,7 @@ impl From<Slide> for NewSlide {
         NewSlide {
             slide_type: slide.slide_type,
             title: slide.title,
+            media_id: slide.media_id,
             content: slide.content,
             question_id: slide.question_id,
         }

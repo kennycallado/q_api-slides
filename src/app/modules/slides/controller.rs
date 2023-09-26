@@ -8,7 +8,7 @@ use crate::app::providers::guards::claims::AccessClaims;
 use crate::app::providers::services::fetch::Fetch;
 
 use crate::app::modules::slides::handlers::{create, index, show, update};
-use crate::app::modules::slides::model::{NewSlide, Slide, SlideExpanded};
+use crate::app::modules::slides::model::{NewSlide, Slide, SlideExpanded, PostSlide};
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
@@ -98,7 +98,7 @@ pub fn get_show_none(_id: i32) -> Status {
 }
 
 #[post("/", data = "<new_slide>")]
-pub async fn post_create(db: Db, claims: AccessClaims, new_slide: Json<NewSlide>) -> Result<Json<Slide>, Status> {
+pub async fn post_create(db: Db, claims: AccessClaims, new_slide: Json<PostSlide>) -> Result<Json<Slide>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => create::post_create_admin(db, claims.0.user, new_slide.into_inner()).await,
         _ => {
@@ -118,7 +118,7 @@ pub async fn put_update(
     db: Db,
     claims: AccessClaims,
     id: i32,
-    new_slide: Json<NewSlide>,
+    new_slide: Json<PostSlide>,
 ) -> Result<Json<Slide>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => update::put_update_admin(db, claims.0.user, id, new_slide.into_inner()).await,

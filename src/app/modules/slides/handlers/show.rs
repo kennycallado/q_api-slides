@@ -12,6 +12,8 @@ use crate::app::modules::slides::model::SlideExpanded;
 
 use crate::app::modules::slide_question::services::repository as sq_repository;
 use crate::app::modules::slides::services::repository as slides_repository;
+use crate::app::modules::media::services::repository as media_repository;
+use crate::app::modules::media::model::Media;
 
 pub async fn get_show_admin(
     fetch: &State<Fetch>,
@@ -38,10 +40,27 @@ pub async fn get_show_admin(
                 None => None,
             };
 
+            let media = match slide.media_id {
+                Some(id) => {
+                    let media = media_repository::get_by_id(&db, id).await;
+                    match media {
+                        Ok(media) => Some(Media {
+                            id: media.id,
+                            name: media.name,
+                            media_type: media.media_type,
+                            url: media.url,
+                        }),
+                        Err(_) => None,
+                    }
+                },
+                None => None,
+            };
+
             let slide_expanded = SlideExpanded {
                 id: slide.id,
                 slide_type: slide.slide_type,
                 title: slide.title,
+                media,
                 content: slide.content,
                 question: pub_question,
             };
@@ -87,10 +106,27 @@ pub async fn get_multiple_admin(
                     None => None,
                 };
 
+                let media = match slide.media_id {
+                    Some(id) => {
+                        let media = media_repository::get_by_id(&db, id).await;
+                        match media {
+                            Ok(media) => Some(Media {
+                                id: media.id,
+                                name: media.name,
+                                media_type: media.media_type,
+                                url: media.url,
+                            }),
+                            Err(_) => None,
+                        }
+                    },
+                    None => None,
+                };
+
                 let slide_expanded = SlideExpanded {
                     id: slide.id,
                     slide_type: slide.slide_type,
                     title: slide.title,
+                    media,
                     content: slide.content,
                     question: pub_question,
                 };

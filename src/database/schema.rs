@@ -12,7 +12,6 @@ diesel::table! {
 diesel::table! {
     slides (id) {
         id -> Int4,
-        order_number -> Nullable<Int4>,
         slide_type -> Varchar,
         title -> Varchar,
         media_id -> Nullable<Int4>,

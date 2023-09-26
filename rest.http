@@ -58,17 +58,22 @@ Content-Type: application/json
   "title": "Título tropecientos"
 }
 
-GET http://localhost:8000/api/v1/slide/6
+GET http://localhost:8000/api/v1/slide/3
 Accept: application/json
 Authorization: Bearer 
 
-PUT http://localhost:8000/api/v1/slide/6
+PUT http://localhost:8000/api/v1/slide/3
 Accept: application/json
 Authorization: Bearer 
 Content-Type: application/json
 
 {
   "slide_type": "content",
+  "media": {
+    "name": "Super imagen",
+    "media_type": "image",
+    "url": "http://google.com/"
+  },
   "content": "Content del título tropecientos",
   "title": "Título tropecientos"
 }

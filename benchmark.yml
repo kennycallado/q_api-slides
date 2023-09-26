@@ -94,6 +94,6 @@ plan:
         Accept: application/json
         Authorization: Bearer {{ TOKEN }}
         Content-Type: application/json
-      body: '{ "slide_type": "content", "content": "Content del título {{ iteration }}", "title": "{{ iteration }}Título tropecientos" }'
+      body: '{ "slide_type": "content", "media": { "name": null, "media_type": "image", "url": "http://www.google.com/"  }, "content": "Content del título {{ iteration }}", "title": "{{ iteration }}-Título tropecientos" }'
     tags: [ put ]
 ---
