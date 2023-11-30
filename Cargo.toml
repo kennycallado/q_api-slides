@@ -6,10 +6,10 @@ edition   = "2021"
 [features]
 default   = ["db_diesel", "fetch"]
 
-cron      = ["escalon-jobs", "tokio-cron-scheduler", "reqwest", "openssl/vendored"]
+cron      = ["escalon-jobs", "tokio-cron-scheduler", "reqwest", "openssl"]
 db_diesel = ["diesel", "diesel_migrations", "rocket_sync_db_pools", "openssl"]
 db_sqlx   = ["sqlx", "rocket_db_pools"]
-fetch     = ["reqwest", "openssl/vendored"]
+fetch     = ["reqwest", "openssl"]
 push      = ["web-push-native", "base64ct", "hyper", "hyper-rustls"]
 
 [profile.release]
